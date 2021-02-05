@@ -27,10 +27,9 @@ func main() {
 		fmt.Print("Please send message >> >> ")
 		text, _ := reader.ReadString('\n')
 		fmt.Fprintf(c, text+"\n")
-
 		//message, _ := bufio.NewReader(c).ReadString('\n')
 		//fmt.Print("->: " + message)
-		if strings.TrimSpace(string(text)) == "STOP" {
+                if strings.TrimSpace(string(text)) == "STOP" {
 			fmt.Println("TCP client exiting...")
 			return
 		}
