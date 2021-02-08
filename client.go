@@ -9,60 +9,41 @@ import (
 )
 
 func main() {
-	arguments := os.Args
-	if len(arguments) == 1 {
+	args := os.Args
+	if len(args) == 1 {
 		fmt.Println("Please provide host:port.")
 		return
 	}
 
-	CONNECT := arguments[1]
-	c, err := net.Dial("tcp", CONNECT)
+	CONNECTION := args[1]
+	c, err := net.Dial("tcp", CONNECTION)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-
+	q := []string{}
 	for {
+		//READ THE USER INPUT
 		reader := bufio.NewReader(os.Stdin)
-		fmt.Print("Please send message >> >> ")
+		fmt.Print("CLIENT : ")
 		text, _ := reader.ReadString('\n')
+		q = append(q, text)
+		fmt.Println("Queue - =", q)
+		//user input is sent to the TCP server over the network
 		fmt.Fprintf(c, text+"\n")
-		//message, _ := bufio.NewReader(c).ReadString('\n')
-		//fmt.Print("->: " + message)
-                if strings.TrimSpace(string(text)) == "STOP" {
+
+		//read the TCP server’s response
+		message, _ := bufio.NewReader(c).ReadString('\n')
+		fmt.Print("SERVER : " + message)
+
+		q = q[1:]
+		fmt.Println("New queue =", q)
+		// terminate when you send the STOP command to the TCP server
+		if strings.TrimSpace(string(text)) == "STOP" {
 			fmt.Println("TCP client exiting...")
 			return
 		}
-		if strings.TrimSpace(string(text)) == "ALL" {
-			fmt.Println("Getting all previous data.....")
-
-		}
-
-		if strings.TrimSpace(string(text)) == "NEW" {
-			fmt.Println("Enter user name....")
-			user, _ := reader.ReadString('\n')
-			fmt.Fprintf(c, user+"\n")
-
-		}
-
-		if strings.TrimSpace(string(text)) == "BRAKE" {
-			fmt.Println("Do you want to stop communication?...")
-			user, _ := reader.ReadString('\n')
-			fmt.Fprintf(c, user+"\n")
-
-		}
-
-		if strings.TrimSpace(string(text)) == "FIRST" {
-			fmt.Println("Whoes message do you want to see first?")
-			user, _ := reader.ReadString('\n')
-			fmt.Fprintf(c, user+"\n")
-
-		}
-
-		if strings.TrimSpace(string(text)) == "PRINT" {
-			fmt.Println("Getting all previous data.....")
-
-		}
-
 	}
 }
+
+		
